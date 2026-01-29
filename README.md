@@ -36,10 +36,4 @@ wget https://raw.githubusercontent.com/BlackDragon100IDN/telegrambotnyil/main/au
 chmod +x auto-install.sh
 sudo ./auto-install.sh
 
-## 📸 Preview
 
-<p align="center">
-  <img src="./Screen%20Shot%201404-11-09%20at%2007.32.59.png" width="700"/>
-  <br><br>
-  <img src="./Screen%20Shot%201404-11-09%20at%2007.34.57.png" width="700"/>
-</p>
