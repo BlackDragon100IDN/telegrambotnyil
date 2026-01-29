@@ -17,6 +17,13 @@ cd /root
 git clone https://github.com/BlackDragon100IDN/telegrambotnyil.git
 cd telegrambotnyil
 
+# Minta token Telegram dari user
+read -p "Masukkan TOKEN Telegram Bot: " TELEGRAM_TOKEN
+
+# Simpan token ke file token.txt
+echo "$TELEGRAM_TOKEN" > token.txt
+
+# Buat file admins.json default
 echo '["8599557076"]' > admins.json
 
 chmod +x bot.py
