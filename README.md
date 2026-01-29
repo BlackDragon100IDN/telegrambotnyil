@@ -14,8 +14,7 @@ Bot Telegram untuk remote server/VPS/Linux device dengan sistem akses admin, app
 - ♻ Restart Service (EarnApp)
 - 🧹 Clear Cache
 - 🚀 Test Bandwidth
-- 🛠 Remote Solve Device (Reboot Aman)
-- ⚙ Shell Command via Telegram (`!command`)
+- 🛠 Remote Solve Device
 - 🔁 Auto Restart Service
 - 🔄 Auto Run Saat Boot
 - 📄 Logging System
