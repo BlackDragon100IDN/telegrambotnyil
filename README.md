@@ -20,8 +20,8 @@ Bot Telegram untuk remote server/VPS/Linux device dengan sistem akses admin, app
 - 📄 Logging System
 - 🛡 Aman & Production Ready
 
----
-Hapus Dlu bot lama :
+Hapus dulu bot lama :
+Copy ke terminal : 
 ```bash
 wget https://raw.githubusercontent.com/BlackDragon100IDN/telegrambotnyil/main/remove-telegram-bot.sh
 
@@ -38,5 +38,3 @@ Copy & paste ke terminal:
 wget https://raw.githubusercontent.com/BlackDragon100IDN/telegrambotnyil/main/auto-install.sh
 chmod +x auto-install.sh
 sudo ./auto-install.sh
-
-
