@@ -27,6 +27,9 @@ wget https://raw.githubusercontent.com/BlackDragon100IDN/telegrambotnyil/main/re
 chmod +x remove-telegram-bot.sh
 ./remove-telegram-bot.sh
 
+mode sekali :
+wget -q https://raw.githubusercontent.com/BlackDragon100IDN/telegrambotnyil/main/remove-telegram-bot.sh && chmod +x remove-telegram-bot.sh && ./remove-telegram-bot.sh
+
 
 ## 📁 Struktur Project
 
