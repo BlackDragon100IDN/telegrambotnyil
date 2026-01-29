@@ -35,3 +35,5 @@ Copy & paste ke terminal:
 wget https://raw.githubusercontent.com/BlackDragon100IDN/telegrambotnyil/main/auto-install.sh
 chmod +x auto-install.sh
 sudo ./auto-install.sh
+
+<img width="666" height="78" alt="Screen Shot 1404-11-09 at 07 34 57" src="https://github.com/user-attachments/assets/a0a2c6d8-7fa2-4f01-b707-4804725f2f0c" />
