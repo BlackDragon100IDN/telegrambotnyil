@@ -21,13 +21,16 @@ Bot Telegram untuk remote server/VPS/Linux device dengan sistem akses admin, app
 - 🛡 Aman & Production Ready
 
 ---
-Hapus Dlu bot lama
+Hapus Dlu bot lama :
+```bash
 wget https://raw.githubusercontent.com/BlackDragon100IDN/telegrambotnyil/main/remove-telegram-bot.sh
 
+```bash
 chmod +x remove-telegram-bot.sh
 ./remove-telegram-bot.sh
 
-mode sekali :
+mode sekali jalan :
+```bash
 wget -q https://raw.githubusercontent.com/BlackDragon100IDN/telegrambotnyil/main/remove-telegram-bot.sh && chmod +x remove-telegram-bot.sh && ./remove-telegram-bot.sh
 
 
