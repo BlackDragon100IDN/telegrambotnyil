@@ -10,7 +10,7 @@ from telegram.ext import (
 )
 
 # ================= CONFIG =================
-TOKEN = "..."
+TOKEN = "ISI_TOKEN_BOT_KAMU"
 ADMIN_FILE = "admins.json"
 
 logging.basicConfig(level=logging.INFO)
@@ -42,7 +42,7 @@ def is_allowed(chat_id):
 def run_cmd(cmd):
     try:
         out = subprocess.check_output(
-            cmd, shell=True, stderr=subprocess.STDOUT, timeout=30
+            cmd, shell=True, stderr=subprocess.STDOUT, timeout=60
         )
         return out.decode(errors="ignore")[:3500]
     except Exception as e:
@@ -56,7 +56,7 @@ def main_menu():
         ],
         [
             InlineKeyboardButton("🌐 Status Koneksi", callback_data="cmd:nmcli"),
-            InlineKeyboardButton("♻ Restart EarnApp", callback_data="cmd:restart")
+            InlineKeyboardButton("♻ Restart Service", callback_data="cmd:restart")
         ],
         [
             InlineKeyboardButton("🧹 Clear Cache", callback_data="cmd:clearcache"),
@@ -124,9 +124,7 @@ def del_admin(update: Update, context: CallbackContext):
 def list_admin(update: Update, context: CallbackContext):
     if not is_admin(str(update.effective_user.id)):
         return
-    update.message.reply_text(
-        "👑 LIST ADMIN:\n" + "\n".join(ADMIN_IDS)
-    )
+    update.message.reply_text("👑 LIST ADMIN:\n" + "\n".join(ADMIN_IDS))
 
 # ================= BUTTON HANDLER =================
 def button(update: Update, context: CallbackContext):
@@ -135,7 +133,6 @@ def button(update: Update, context: CallbackContext):
     user_id = str(query.from_user.id)
     data = query.data
 
-    # APPROVAL
     if data.startswith(("approve:", "reject:")):
         if not is_admin(user_id):
             return
@@ -154,10 +151,8 @@ def button(update: Update, context: CallbackContext):
         return
 
     if data == "reboot_confirm":
-        if not is_admin(user_id):
-            return
         query.edit_message_text(
-            "🛠 *Solve Device*\n\nPerangkat akan di solve secara aman.",
+            "🛠 *Solve Device*\n\nReboot device sekarang?",
             parse_mode="Markdown",
             reply_markup=InlineKeyboardMarkup([
                 [
@@ -168,28 +163,23 @@ def button(update: Update, context: CallbackContext):
         )
 
     elif data == "reboot_now":
-        if not is_admin(user_id):
-            return
         run_cmd("nohup sudo shutdown -r +1 'Solve Device via Telegram Bot' >/dev/null 2>&1 &")
-        query.edit_message_text("🔄 Solve dijalankan.\nDevice akan reboot ±1 menit.")
+        query.edit_message_text("🔄 Device akan reboot ±1 menit")
 
     elif data == "menu":
         query.edit_message_text("📟 Menu", reply_markup=main_menu())
 
     elif data.startswith("cmd:"):
         cmd = data.split(":")[1]
-
         cmds = {
             "uptime": ("⏱ UPTIME", "uptime"),
             "ss": ("📡 PORT STATUS", "sudo ss -tupn"),
-            "restart": ("♻ EARNAPP", "systemctl restart earnapp"),
+            "restart": ("♻ SERVICE", "systemctl restart telegram-remote"),
             "nmcli": ("🌐 STATUS KONEKSI", "nmcli device status"),
             "clearcache": ("🧹 CLEAR CACHE", "sudo rm -rf /tmp/* /var/tmp/* && sudo apt clean"),
-            "bandwidth": (
-                "🚀 CEK BANDWIDTH",
+            "bandwidth": ("🚀 CEK BANDWIDTH",
                 "curl -L http://speed.cloudflare.com/__down?bytes=1000000 "
-                "-o /dev/null -w 'Time: %{time_total}s\\nSpeed: %{speed_download} bytes/sec\\n'"
-            )
+                "-o /dev/null -w 'Time: %{time_total}s\\nSpeed: %{speed_download} bytes/sec\\n'")
         }
 
         if cmd in cmds:
