@@ -1,78 +1,34 @@
 #!/bin/bash
-
 set -e
 
-echo "======================================"
-echo " Telegram Remote Bot - Auto Installer "
-echo "======================================"
+echo "=== TELEGRAMBOTNYIL AUTO INSTALLER ==="
 
-REPO_URL="https://github.com/BlackDragon100IDN/telegrambotnyil.git"
-BOT_DIR="/root/telegrambotnyil"
-VENV_DIR="/root/tgbot"
-BOT_FILE="bot.py"
-SERVICE_NAME="telegram-remote"
+apt update
+apt install -y python3 python3-venv python3-pip git curl sudo
 
-# ===== INPUT TOKEN =====
-read -p "Masukkan TOKEN Bot Telegram: " BOT_TOKEN
-if [ -z "$BOT_TOKEN" ]; then
-  echo "❌ Token tidak boleh kosong!"
-  exit 1
-fi
-echo "✅ Token diterima"
+mkdir -p /root/tgbot
+python3 -m venv /root/tgbot
 
-# ===== INSTALL SYSTEM PACKAGE =====
-apt update -y
-apt install -y git python3 python3-full python3-venv sudo curl
-
-# ===== CLONE REPO =====
-if [ -d "$BOT_DIR" ]; then
-  echo "📁 Repo sudah ada, skip clone"
-else
-  git clone $REPO_URL $BOT_DIR
-fi
-
-# ===== CREATE VENV =====
-python3 -m venv $VENV_DIR
-source $VENV_DIR/bin/activate
-
-# ===== INSTALL PY LIB =====
+source /root/tgbot/bin/activate
 pip install --upgrade pip
 pip install python-telegram-bot==13.15
 
-# ===== SET TOKEN =====
-sed -i "s|^TOKEN = .*|TOKEN = \"$BOT_TOKEN\"|g" $BOT_DIR/$BOT_FILE
+cd /root
+git clone https://github.com/BlackDragon100IDN/telegrambotnyil.git
+cd telegrambotnyil
 
-# ===== SUDO NOPASSWD =====
-USERNAME=$(whoami)
-if ! grep -q "$USERNAME ALL=(ALL) NOPASSWD: /sbin/shutdown" /etc/sudoers; then
-  echo "$USERNAME ALL=(ALL) NOPASSWD: /sbin/shutdown" >> /etc/sudoers
-fi
+echo '["8599557076"]' > admins.json
 
-# ===== SYSTEMD SERVICE =====
-cat > /etc/systemd/system/${SERVICE_NAME}.service <<EOF
-[Unit]
-Description=Telegram Linux Remote
-After=network.target
+chmod +x bot.py
 
-[Service]
-Type=simple
-User=root
-WorkingDirectory=$BOT_DIR
-ExecStart=${VENV_DIR}/bin/python ${BOT_DIR}/${BOT_FILE}
-Restart=always
-RestartSec=5
-Environment=PYTHONUNBUFFERED=1
-
-[Install]
-WantedBy=multi-user.target
-EOF
+cp telegrambotnyil.service /etc/systemd/system/telegram-remote.service
 
 systemctl daemon-reexec
 systemctl daemon-reload
-systemctl enable ${SERVICE_NAME}
-systemctl restart ${SERVICE_NAME}
+systemctl enable telegram-remote
+systemctl restart telegram-remote
 
 echo "======================================"
-echo " INSTALL SELESAI"
-echo " Bot aktif & autorun boot"
+echo " INSTALL SELESAI "
+echo " Bot aktif dan auto-run saat boot "
 echo "======================================"
