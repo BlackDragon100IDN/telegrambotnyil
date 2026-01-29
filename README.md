@@ -29,13 +29,10 @@ chmod +x remove-telegram-bot.sh
 ./remove-telegram-bot.sh
 
 mode sekali jalan :
-
 wget -q https://raw.githubusercontent.com/BlackDragon100IDN/telegrambotnyil/main/remove-telegram-bot.sh && chmod +x remove-telegram-bot.sh && ./remove-telegram-bot.sh
 
 
-
 ## ⚡ Instalasi (1 Command Install)
-
 Copy & paste ke terminal:
 
 wget https://raw.githubusercontent.com/BlackDragon100IDN/telegrambotnyil/main/auto-install.sh
