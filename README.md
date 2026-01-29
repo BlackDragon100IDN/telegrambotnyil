@@ -11,7 +11,7 @@ Bot Telegram untuk remote server/VPS/Linux device dengan sistem akses admin, app
 - ⏱ Uptime
 - 🌐 Status Koneksi (nmcli)
 - 📡 Port Status
-- ♻ Restart Service (EarnApp)
+- ♻ Restart Service
 - 🧹 Clear Cache
 - 🚀 Test Bandwidth
 - 🛠 Remote Solve Device
