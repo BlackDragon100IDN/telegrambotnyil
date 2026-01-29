@@ -38,6 +38,8 @@ sudo ./auto-install.sh
 
 ## 📸 Preview
 
-![Installer 1](./Screen%20Shot%201404-11-09%20at%2007.32.59.png)
-![Installer 2](./Screen%20Shot%201404-11-09%20at%2007.34.57.png)
-
+<p align="center">
+  <img src="./Screen%20Shot%201404-11-09%20at%2007.32.59.png" width="700"/>
+  <br><br>
+  <img src="./Screen%20Shot%201404-11-09%20at%2007.34.57.png" width="700"/>
+</p>
