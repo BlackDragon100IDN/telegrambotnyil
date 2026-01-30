@@ -57,6 +57,7 @@ wget -q https://raw.githubusercontent.com/BlackDragon100IDN/telegrambotnyil/main
 
 ---
 
+
 ## ⚡ Instalasi Otomatis (1 Command Install)
 
 Copy & paste ke terminal:
@@ -66,7 +67,10 @@ wget https://raw.githubusercontent.com/BlackDragon100IDN/telegrambotnyil/main/au
 chmod +x auto-install.sh
 sudo ./auto-install.sh
 ```
-
+Copy & paste ke terminal untuk manual token :
+```bash
+sudo nano /root/telegrambotnyil/bot.py
+****
 ---
 
 ## 📁 Struktur Project
