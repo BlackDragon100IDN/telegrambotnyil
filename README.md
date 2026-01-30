@@ -67,9 +67,7 @@ wget https://raw.githubusercontent.com/BlackDragon100IDN/telegrambotnyil/main/au
 chmod +x auto-install.sh
 sudo ./auto-install.sh
 ```
-Copy & paste ke terminal untuk manual token :
-```bash
-sudo nano /root/telegrambotnyil/bot.py
+
 ****
 ---
 
