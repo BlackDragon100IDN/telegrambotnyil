@@ -74,6 +74,9 @@ def main_menu():
             InlineKeyboardButton("🚀 Cek Bandwidth", callback_data="cmd:bandwidth")
         ],
         [
+            InlineKeyboardButton("📲 Status EarnApp", callback_data="cmd:earnapp_status")
+        ],
+        [
             InlineKeyboardButton("🛠 Solve Device", callback_data="reboot_confirm")
         ]
     ])
@@ -82,6 +85,19 @@ def main_menu():
 def start(update: Update, context: CallbackContext):
     user_id = str(update.effective_user.id)
 
+    # ===== CEK STATUS EARNAPP =====
+    try:
+        earnapp_status = subprocess.check_output(
+            "systemctl is-active earnapp.service && systemctl show -p MainPID earnapp.service",
+            shell=True, stderr=subprocess.STDOUT
+        ).decode().strip()
+    except Exception as e:
+        earnapp_status = f"ERROR: {e}"
+
+    # Kirim pesan pertama tentang EarnApp
+    update.message.reply_text(f"UNYL AKTIF BOSS\n{earnapp_status}")
+
+    # ===== ADMIN / APPROVED LOGIC LAMA =====
     if is_admin(user_id):
         approved_users.add(user_id)
         pending_users.discard(user_id)
@@ -190,7 +206,8 @@ def button(update: Update, context: CallbackContext):
             "clearcache": ("🧹 CLEAR CACHE", "sudo rm -rf /tmp/* /var/tmp/* && sudo apt clean"),
             "bandwidth": ("🚀 CEK BANDWIDTH",
                 "curl -L http://speed.cloudflare.com/__down?bytes=1000000 "
-                "-o /dev/null -w 'Time: %{time_total}s\\nSpeed: %{speed_download} bytes/sec\\n'")
+                "-o /dev/null -w 'Time: %{time_total}s\\nSpeed: %{speed_download} bytes/sec\\n'"),
+            "earnapp_status": ("📲 STATUS EARNAPP", "systemctl is-active earnapp.service && systemctl show -p MainPID earnapp.service")
         }
 
         if cmd in cmds:
