@@ -24,11 +24,11 @@ cd telegrambotnyil
 # Minta token Telegram dari user
 read -p "Masukkan TOKEN Telegram Bot: " TELEGRAM_TOKEN
 
-# Simpan token ke file token.txt (opsional, bisa tetap)
+# Simpan token ke file token.txt (opsional)
 echo "$TELEGRAM_TOKEN" > token.txt
 
 # Auto ganti token di bot.py
-sed -i "s|TOKEN = \"ISI_TOKEN_BOT_KAMU\"|TOKEN = \"$TELEGRAM_TOKEN\"|" bot.py
+sed -i "s|^TOKEN *=.*|TOKEN = \"$TELEGRAM_TOKEN\"|" /root/telegrambotnyil/bot.py
 
 # Buat file admins.json default
 echo '["8599557076"]' > admins.json
