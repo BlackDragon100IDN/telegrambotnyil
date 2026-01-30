@@ -10,8 +10,19 @@ from telegram.ext import (
 )
 
 # ================= CONFIG =================
-TOKEN = "ISI_TOKEN_BOT_KAMU"
 ADMIN_FILE = "admins.json"
+
+# ================= TOKEN =================
+TOKEN_FILE = "token.txt"
+try:
+    with open(TOKEN_FILE, "r") as f:
+        TOKEN = f.read().strip()
+except FileNotFoundError:
+    print(f"ERROR: File {TOKEN_FILE} tidak ditemukan. Masukkan token dari BotFather!")
+    exit(1)
+except Exception as e:
+    print(f"ERROR membaca token: {e}")
+    exit(1)
 
 logging.basicConfig(level=logging.INFO)
 
