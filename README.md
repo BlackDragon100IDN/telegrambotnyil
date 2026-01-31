@@ -43,13 +43,6 @@ Dirancang untuk kebutuhan **DevOps, IoT device, mini PC, VPS, dan server product
 
 ## 🗑 Hapus Bot Lama (WAJIB jika sudah pernah install)
 
-### Mode Normal
-```bash
-wget https://raw.githubusercontent.com/BlackDragon100IDN/telegrambotnyil/main/remove-telegram-bot.sh
-chmod +x remove-telegram-bot.sh
-./remove-telegram-bot.sh
-```
-
 ### Mode Sekali Jalan (One-Line Command)
 ```bash
 wget -q https://raw.githubusercontent.com/BlackDragon100IDN/telegrambotnyil/main/remove-telegram-bot.sh && chmod +x remove-telegram-bot.sh && ./remove-telegram-bot.sh
