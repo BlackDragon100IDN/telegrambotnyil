@@ -22,6 +22,7 @@ wget -q https://raw.githubusercontent.com/BlackDragon100IDN/telegrambotnyil/main
 ```
 
 ****
+Seteleh selesai masukan token bot dari botfather lalu enter tunggu sampai selesai
 ---
 
 ## ⭐ Support Project
