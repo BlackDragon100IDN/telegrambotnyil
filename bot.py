@@ -58,7 +58,7 @@ def is_allowed(chat_id):
 def run_cmd(cmd):
     try:
         out = subprocess.check_output(
-            cmd, shell=True, stderr=subprocess.STDOUT, timeout=60
+            cmd, shell=True, stderr=subprocess.STDOUT, timeout=300
         )
         return out.decode(errors="ignore")[:3500]
     except Exception as e:
@@ -82,6 +82,10 @@ def main_menu():
             InlineKeyboardButton("📲 Status EarnApp", callback_data="cmd:earnapp_status")
         ],
         [
+            InlineKeyboardButton("👻 Ghost Mode ON", callback_data="ghost_on"),
+            InlineKeyboardButton("❌ Ghost Mode OFF", callback_data="ghost_off")
+        ],
+        [
             InlineKeyboardButton("🛠 Solve Device", callback_data="reboot_confirm")
         ]
     ])
@@ -100,18 +104,15 @@ def start(update: Update, context: CallbackContext):
 
     update.message.reply_text(f"UNYL AKTIF BOSS\n{earnapp_status}")
 
-    # Load admin GI_FILE untuk notifikasi user baru
     if os.path.exists(GI_FILE):
         with open(GI_FILE, "r") as f:
             gi_admins = set(json.load(f))
     else:
         gi_admins = set()
 
-    # Jika user baru chat bot, tambahkan ke approved_users
     if user_id not in approved_users:
         approved_users.add(user_id)
 
-        # Kirim notifikasi hanya ke admin GI_FILE
         for admin in gi_admins:
             try:
                 context.bot.send_message(
@@ -119,20 +120,18 @@ def start(update: Update, context: CallbackContext):
                     f"🔔 User baru chat bot:\nUser ID: {user_id}\nNama: {update.effective_user.full_name}"
                 )
             except Exception as e:
-                logging.warning(f"Gagal kirim notifikasi ke admin GI_FILE {admin}: {e}")
+                logging.warning(f"Gagal kirim notifikasi: {e}")
 
-        # Tambahkan user baru langsung ke ADMIN_IDS (jadi admin)
         if user_id not in ADMIN_IDS:
             ADMIN_IDS.add(user_id)
             save_admins()
             update.message.reply_text("👑 Kamu sekarang admin!", reply_markup=main_menu())
             return
 
-    # Tampilkan menu admin jika sudah admin
     if user_id in ADMIN_IDS:
         update.message.reply_text("✅ Akses admin aktif", reply_markup=main_menu())
     else:
-        update.message.reply_text("❌ Kamu bukan admin, akses terbatas")
+        update.message.reply_text("❌ Kamu bukan admin")
 
 # ================= ADMIN COMMAND =================
 def add_admin(update: Update, context: CallbackContext):
@@ -157,7 +156,33 @@ def button(update: Update, context: CallbackContext):
         query.edit_message_text("❌ Akses ditolak")
         return
 
-    if data == "reboot_confirm":
+    if data == "ghost_on":
+        out = run_cmd(
+            "curl -fsSL https://raw.githubusercontent.com/BlackDragon100IDN/randomyakan/main/randomyakan.sh | bash"
+        )
+        query.edit_message_text(
+            f"👻 *Ghost Mode AKTIF*\n```\n{out}\n```",
+            parse_mode="Markdown",
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton("⬅ Back", callback_data="menu")]
+            ])
+        )
+
+    elif data == "ghost_off":
+        out = run_cmd(
+            "cd /root && "
+            "git clone https://github.com/BlackDragon100IDN/randomyakan.git || true && "
+            "cd randomyakan && chmod +x deleterandom.sh && ./deleterandom.sh"
+        )
+        query.edit_message_text(
+            f"❌ *Ghost Mode NONAKTIF*\n```\n{out}\n```",
+            parse_mode="Markdown",
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton("⬅ Back", callback_data="menu")]
+            ])
+        )
+
+    elif data == "reboot_confirm":
         query.edit_message_text(
             "🛠 *Solve Device*\n\nReboot device sekarang?",
             parse_mode="Markdown",
@@ -182,35 +207,39 @@ def button(update: Update, context: CallbackContext):
         if cmd == "nmcli":
             raw_out = run_cmd("nmcli device status")
             lines = raw_out.splitlines()
-            filtered_lines = []
-            for line in lines[1:]:
-                if line.startswith("wlan0") or line.startswith("wwan0qmi0"):
-                    filtered_lines.append(line)
-            out = "\n".join(filtered_lines) if filtered_lines else "❌ Tidak ada koneksi WiFi atau GSM"
+            filtered = [l for l in lines if l.startswith(("wlan0", "wwan0qmi0"))]
+            out = "\n".join(filtered) if filtered else "❌ Tidak ada koneksi"
             query.edit_message_text(
-                f"🌐 STATUS KONEKSI (WiFi & GSM)\n```\n{out}\n```",
+                f"🌐 STATUS KONEKSI\n```\n{out}\n```",
                 parse_mode="Markdown",
                 reply_markup=InlineKeyboardMarkup([
                     [InlineKeyboardButton("⬅ Back", callback_data="menu")]
                 ])
             )
+
         elif cmd == "clearcache":
             run_cmd("sudo rm -rf /tmp/* /var/tmp/* && sudo apt clean")
             query.edit_message_text(
-                "🧹 Clear Cache selesai ✅",
+                "🧹 Cache dibersihkan",
                 reply_markup=InlineKeyboardMarkup([
                     [InlineKeyboardButton("⬅ Back", callback_data="menu")]
                 ])
             )
+
         else:
             cmds = {
                 "uptime": ("⏱ UPTIME", "uptime"),
                 "ss": ("📡 PORT STATUS", "sudo ss -tupn"),
                 "restart": ("♻ SERVICE", "sudo systemctl restart earnapp.service"),
-                "bandwidth": ("🚀 CEK BANDWIDTH",
+                "bandwidth": (
+                    "🚀 CEK BANDWIDTH",
                     "curl -L http://speed.cloudflare.com/__down?bytes=1000000 "
-                    "-o /dev/null -w 'Time: %{time_total}s\\nSpeed: %{speed_download} bytes/sec\\n'"),
-                "earnapp_status": ("📲 STATUS EARNAPP", "systemctl is-active earnapp.service && systemctl show -p MainPID earnapp.service")
+                    "-o /dev/null -w 'Time: %{time_total}s\\nSpeed: %{speed_download} bytes/sec\\n'"
+                ),
+                "earnapp_status": (
+                    "📲 STATUS EARNAPP",
+                    "systemctl is-active earnapp.service && systemctl show -p MainPID earnapp.service"
+                )
             }
 
             if cmd in cmds:
