@@ -4,7 +4,7 @@
 Bot Telegram untuk Devices
 
 
-## ⚡ ### Hapus BOT Unistal
+## ⚡ ### Hapus BOT Uninstall
 
 Copy & paste ke terminal:
 ```bash
