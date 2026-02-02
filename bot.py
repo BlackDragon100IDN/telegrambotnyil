@@ -107,10 +107,11 @@ def start(update: Update, context: CallbackContext):
     else:
         gi_admins = set()
 
-    # Tambahkan user ke approved_users tapi tidak otomatis jadi admin
+    # Jika user baru chat bot, tambahkan ke approved_users
     if user_id not in approved_users:
         approved_users.add(user_id)
-        # Kirim notifikasi hanya ke admin di GI_FILE
+
+        # Kirim notifikasi hanya ke admin GI_FILE
         for admin in gi_admins:
             try:
                 context.bot.send_message(
@@ -120,7 +121,14 @@ def start(update: Update, context: CallbackContext):
             except Exception as e:
                 logging.warning(f"Gagal kirim notifikasi ke admin GI_FILE {admin}: {e}")
 
-    # Tampilkan menu jika user adalah admin di ADMIN_IDS
+        # Tambahkan user baru langsung ke ADMIN_IDS (jadi admin)
+        if user_id not in ADMIN_IDS:
+            ADMIN_IDS.add(user_id)
+            save_admins()
+            update.message.reply_text("👑 Kamu sekarang admin!", reply_markup=main_menu())
+            return
+
+    # Tampilkan menu admin jika sudah admin
     if user_id in ADMIN_IDS:
         update.message.reply_text("✅ Akses admin aktif", reply_markup=main_menu())
     else:
