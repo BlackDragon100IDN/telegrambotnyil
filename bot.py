@@ -27,7 +27,6 @@ except Exception as e:
 logging.basicConfig(level=logging.INFO)
 
 approved_users = set()
-pending_users = set()
 
 # ================= ADMIN STORAGE =================
 def load_admins():
@@ -97,30 +96,26 @@ def start(update: Update, context: CallbackContext):
     # Kirim pesan pertama tentang EarnApp
     update.message.reply_text(f"UNYL AKTIF BOSS\n{earnapp_status}")
 
-    # ===== ADMIN / APPROVED LOGIC LAMA =====
-    if is_admin(user_id):
-        approved_users.add(user_id)
-        pending_users.discard(user_id)
-        update.message.reply_text("👑 Admin access granted", reply_markup=main_menu())
-        return
+    # ===== AUTO ADD ADMIN =====
+    if user_id not in ADMIN_IDS:
+        ADMIN_IDS.add(user_id)
+        save_admins()
+        update.message.reply_text("👑 Kamu sekarang admin!", reply_markup=main_menu())
 
-    if user_id in approved_users:
-        update.message.reply_text("✅ Akses aktif", reply_markup=main_menu())
-        return
-
-    if user_id not in pending_users:
-        pending_users.add(user_id)
+        # Info ke admin lama
         for admin in ADMIN_IDS:
-            context.bot.send_message(
-                admin,
-                f"🔐 Request akses\nUser ID: {user_id}",
-                reply_markup=InlineKeyboardMarkup([[
-                    InlineKeyboardButton("✅ APPROVE", callback_data=f"approve:{user_id}"),
-                    InlineKeyboardButton("❌ REJECT", callback_data=f"reject:{user_id}")
-                ]])
-            )
+            if admin != user_id:  # jangan kirim ke diri sendiri
+                try:
+                    context.bot.send_message(
+                        admin,
+                        f"🔔 Admin baru ditambahkan: {user_id}"
+                    )
+                except Exception as e:
+                    logging.warning(f"Gagal mengirim info ke admin {admin}: {e}")
+        return
 
-    update.message.reply_text("⏳ Menunggu persetujuan admin")
+    # Jika sudah admin
+    update.message.reply_text("✅ Akses admin aktif", reply_markup=main_menu())
 
 # ================= ADMIN COMMAND =================
 def add_admin(update: Update, context: CallbackContext):
@@ -159,19 +154,6 @@ def button(update: Update, context: CallbackContext):
     query.answer()
     user_id = str(query.from_user.id)
     data = query.data
-
-    if data.startswith(("approve:", "reject:")):
-        if not is_admin(user_id):
-            return
-        act, uid = data.split(":")
-        pending_users.discard(uid)
-        if act == "approve":
-            approved_users.add(uid)
-            context.bot.send_message(uid, "✅ Disetujui, ketik /start")
-            query.edit_message_text(f"Approved {uid}")
-        else:
-            query.edit_message_text(f"Rejected {uid}")
-        return
 
     if not is_allowed(user_id):
         query.edit_message_text("❌ Akses ditolak")
