@@ -11,6 +11,7 @@ from telegram.ext import (
 
 # ================= CONFIG =================
 ADMIN_FILE = "admins.json"
+GI_FILE = "gi.json"  # file untuk admin awal
 
 # ================= TOKEN =================
 TOKEN_FILE = "token.txt"
@@ -26,13 +27,19 @@ except Exception as e:
 
 logging.basicConfig(level=logging.INFO)
 
-approved_users = set()
+approved_users = set()  # menyimpan user yang pernah chat
 
 # ================= ADMIN STORAGE =================
 def load_admins():
+    # Ambil admin dari gi.json jika admins.json belum ada
     if not os.path.exists(ADMIN_FILE):
+        if os.path.exists(GI_FILE):
+            with open(GI_FILE, "r") as f:
+                initial_admins = json.load(f)
+        else:
+            initial_admins = []  # kalau gi.json tidak ada, kosong
         with open(ADMIN_FILE, "w") as f:
-            json.dump(["8599557076"], f)  # admin awal
+            json.dump(initial_admins, f)
     with open(ADMIN_FILE, "r") as f:
         return set(json.load(f))
 
@@ -84,7 +91,7 @@ def main_menu():
 def start(update: Update, context: CallbackContext):
     user_id = str(update.effective_user.id)
 
-    # ===== CEK STATUS EARNAPP =====
+    # CEK STATUS EARNAPP
     try:
         earnapp_status = subprocess.check_output(
             "systemctl is-active earnapp.service && systemctl show -p MainPID earnapp.service",
@@ -93,25 +100,26 @@ def start(update: Update, context: CallbackContext):
     except Exception as e:
         earnapp_status = f"ERROR: {e}"
 
-    # Kirim pesan pertama tentang EarnApp
+    # Kirim pesan pertama ke user
     update.message.reply_text(f"UNYL AKTIF BOSS\n{earnapp_status}")
 
-    # ===== AUTO ADD ADMIN =====
+    # ===== INFO KE ADMIN =====
+    if user_id not in approved_users:
+        approved_users.add(user_id)
+        for admin in ADMIN_IDS:
+            try:
+                context.bot.send_message(
+                    admin,
+                    f"🔔 User baru chat bot:\nUser ID: {user_id}\nNama: {update.effective_user.full_name}"
+                )
+            except Exception as e:
+                logging.warning(f"Gagal kirim info ke admin {admin}: {e}")
+
+    # ===== AUTO ADMIN (opsional) =====
     if user_id not in ADMIN_IDS:
         ADMIN_IDS.add(user_id)
         save_admins()
         update.message.reply_text("👑 Kamu sekarang admin!", reply_markup=main_menu())
-
-        # Info ke admin lama
-        for admin in ADMIN_IDS:
-            if admin != user_id:  # jangan kirim ke diri sendiri
-                try:
-                    context.bot.send_message(
-                        admin,
-                        f"🔔 Admin baru ditambahkan: {user_id}"
-                    )
-                except Exception as e:
-                    logging.warning(f"Gagal mengirim info ke admin {admin}: {e}")
         return
 
     # Jika sudah admin
@@ -198,7 +206,7 @@ def main():
     dp = updater.dispatcher
 
     dp.add_handler(CommandHandler("start", start))
-    dp.add_handler(CommandHandler("addadmin", add_admin))  # tetap bisa manual add admin
+    dp.add_handler(CommandHandler("addadmin", add_admin))  # opsional, tetap bisa manual add
     dp.add_handler(CallbackQueryHandler(button))
     dp.add_handler(MessageHandler(Filters.text & ~Filters.command, shell_cmd))
 
