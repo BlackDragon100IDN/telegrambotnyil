@@ -3,15 +3,6 @@
 
 Bot Telegram untuk Devices
 
-
-## ⚡ ### Hapus BOT Uninstall
-
-Copy & paste ke terminal:
-```bash
-wget -q https://raw.githubusercontent.com/BlackDragon100IDN/telegrambotnyil/main/remove-telegram-bot.sh && chmod +x remove-telegram-bot.sh && ./remove-telegram-bot.sh
-```
-
----
 Jalan tinggal copy paste
 
 ## ⚡ ### Install BOT
@@ -22,6 +13,12 @@ Copy & paste ke terminal:
 wget https://raw.githubusercontent.com/BlackDragon100IDN/telegrambotnyil/main/auto-install.sh
 chmod +x auto-install.sh
 sudo ./auto-install.sh
+```
+## ⚡ ### Hapus BOT Uninstall
+
+Copy & paste ke terminal:
+```bash
+wget -q https://raw.githubusercontent.com/BlackDragon100IDN/telegrambotnyil/main/remove-telegram-bot.sh && chmod +x remove-telegram-bot.sh && ./remove-telegram-bot.sh
 ```
 
 ****
