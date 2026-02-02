@@ -100,24 +100,31 @@ def start(update: Update, context: CallbackContext):
 
     update.message.reply_text(f"UNYL AKTIF BOSS\n{earnapp_status}")
 
+    # Load admin GI_FILE untuk notifikasi user baru
+    if os.path.exists(GI_FILE):
+        with open(GI_FILE, "r") as f:
+            gi_admins = set(json.load(f))
+    else:
+        gi_admins = set()
+
+    # Tambahkan user ke approved_users tapi tidak otomatis jadi admin
     if user_id not in approved_users:
         approved_users.add(user_id)
-        for admin in ADMIN_IDS:
+        # Kirim notifikasi hanya ke admin di GI_FILE
+        for admin in gi_admins:
             try:
                 context.bot.send_message(
                     admin,
                     f"🔔 User baru chat bot:\nUser ID: {user_id}\nNama: {update.effective_user.full_name}"
                 )
             except Exception as e:
-                logging.warning(f"Gagal kirim info ke admin {admin}: {e}")
+                logging.warning(f"Gagal kirim notifikasi ke admin GI_FILE {admin}: {e}")
 
-    if user_id not in ADMIN_IDS:
-        ADMIN_IDS.add(user_id)
-        save_admins()
-        update.message.reply_text("👑 Kamu sekarang admin!", reply_markup=main_menu())
-        return
-
-    update.message.reply_text("✅ Akses admin aktif", reply_markup=main_menu())
+    # Tampilkan menu jika user adalah admin di ADMIN_IDS
+    if user_id in ADMIN_IDS:
+        update.message.reply_text("✅ Akses admin aktif", reply_markup=main_menu())
+    else:
+        update.message.reply_text("❌ Kamu bukan admin, akses terbatas")
 
 # ================= ADMIN COMMAND =================
 def add_admin(update: Update, context: CallbackContext):
