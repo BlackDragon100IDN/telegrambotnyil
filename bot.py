@@ -129,25 +129,6 @@ def add_admin(update: Update, context: CallbackContext):
     save_admins()
     update.message.reply_text(f"✅ Admin ditambahkan: {uid}")
 
-def del_admin(update: Update, context: CallbackContext):
-    if not is_admin(str(update.effective_user.id)):
-        return
-    if not context.args:
-        update.message.reply_text("❌ Gunakan: /deladmin user_id")
-        return
-    uid = context.args[0]
-    if uid in ADMIN_IDS:
-        ADMIN_IDS.remove(uid)
-        save_admins()
-        update.message.reply_text(f"🗑 Admin dihapus: {uid}")
-    else:
-        update.message.reply_text("⚠ User bukan admin")
-
-def list_admin(update: Update, context: CallbackContext):
-    if not is_admin(str(update.effective_user.id)):
-        return
-    update.message.reply_text("👑 LIST ADMIN:\n" + "\n".join(ADMIN_IDS))
-
 # ================= BUTTON HANDLER =================
 def button(update: Update, context: CallbackContext):
     query = update.callback_query
@@ -217,9 +198,7 @@ def main():
     dp = updater.dispatcher
 
     dp.add_handler(CommandHandler("start", start))
-    dp.add_handler(CommandHandler("addadmin", add_admin))
-    dp.add_handler(CommandHandler("deladmin", del_admin))
-    dp.add_handler(CommandHandler("listadmin", list_admin))
+    dp.add_handler(CommandHandler("addadmin", add_admin))  # tetap bisa manual add admin
     dp.add_handler(CallbackQueryHandler(button))
     dp.add_handler(MessageHandler(Filters.text & ~Filters.command, shell_cmd))
 
