@@ -16,6 +16,8 @@ sudo ./auto-install.sh
 ```
 ****
 Seteleh selesai masukan token bot dari botfather lalu enter tunggu sampai selesai
+buka nama bot
+ketik /start
 ---
 ## ⚡ ### Hapus BOT Uninstall
 
