@@ -14,6 +14,9 @@ wget https://raw.githubusercontent.com/BlackDragon100IDN/telegrambotnyil/main/au
 chmod +x auto-install.sh
 sudo ./auto-install.sh
 ```
+****
+Seteleh selesai masukan token bot dari botfather lalu enter tunggu sampai selesai
+---
 ## ⚡ ### Hapus BOT Uninstall
 
 Copy & paste ke terminal:
@@ -22,8 +25,6 @@ wget -q https://raw.githubusercontent.com/BlackDragon100IDN/telegrambotnyil/main
 ```
 
 ****
-Seteleh selesai masukan token bot dari botfather lalu enter tunggu sampai selesai
----
 
 ## ⭐ Support Project
 
